@@ -26,3 +26,5 @@ API Integration: Axios for handling HTTP requests
 
 ## Why This Project:
 This project is not only a fun and unique culinary exploration but also an excellent opportunity to hone web development skills. It allows for the integration of frontend and backend technologies, improving proficiency with React, Redux, and API integration using Axios. Additionally, the project emphasizes user experience and interface design, making it both interesting and valuable.
+
+## Explore quirky Maggi recipes with step-by-step guides and visuals.
