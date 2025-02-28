@@ -30,3 +30,5 @@ This project is not only a fun and unique culinary exploration but also an excel
 ## Explore quirky Maggi recipes with step-by-step guides and visuals.
 
 ## Allow users to share and rate their own weird Maggi creations.
+
+## ## Allow users to share and rate their own weird Maggi creations.
