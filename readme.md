@@ -23,5 +23,4 @@ This project is not only a fun and unique culinary exploration but also an excel
 ## Explore quirky Maggi recipes with step-by-step guides and visuals.
 
 ## deployment link
-  
- link : https://s89-weirdest-maggie-recipes-ever.onrender.com
+link : https://s89-weirdest-maggie-recipes-ever.onrender.com
