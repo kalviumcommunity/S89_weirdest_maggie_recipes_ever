@@ -9,8 +9,9 @@ app.get('/ping', (req, res) => {
 
 app.listen(PORT, async () => {
   try {
+    
     await mongoose.connect('mongodb+srv://madhukiraninaparthi2001:madhukiraninaparthi2006@cluster0.ewsp8.mongodb.net/');
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB database');
   } catch (err) {
     console.log(err);
   }
