@@ -5,8 +5,11 @@ const AboutContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  line-height: 1.6;
+  line-height: 1.8;
   font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const Section = styled.section`
@@ -17,33 +20,53 @@ const Title = styled.h1`
   color: #ff6b6b;
   text-align: center;
   margin-bottom: 2rem;
+  font-size: 2rem;
 `;
 
 const SubTitle = styled.h2`
-  color:rgb(255, 255, 255);
+  color: #333;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
 `;
 
 const List = styled.ul`
   list-style-type: none;
   padding-left: 0;
-  
+
   li {
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
+    color: #555;
+  }
+
+  li:last-child {
+    border-bottom: none;
   }
 `;
 
 const JoinCommunity = styled(Section)`
-  background-color:rgb(71, 74, 77);
+  background-color: #ff6b6b;
   padding: 2rem;
   border-radius: 8px;
   text-align: center;
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const Description = styled.p`
   text-align: justify;
-  color:rgb(255, 255, 255);
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+`;
+
+const Image = styled.img`
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const About = () => {
@@ -51,6 +74,8 @@ const About = () => {
     <AboutContainer>
       <Title>About Weirdest Maggi Recipes</Title>
       
+      <Image src='https://5.imimg.com/data5/XG/IR/GLADMIN-60795231/maggie.png' alt="Delicious Maggi" />
+
       <Section>
         <SubTitle>Our Vision</SubTitle>
         <Description>
