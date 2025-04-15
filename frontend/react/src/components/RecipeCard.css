@@ -1,0 +1,28 @@
+/* Card container styles */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Title styles */
+  .card-title {
+    color: #ff6b6b;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Description styles */
+  .card-description {
+    color: #555;
+    font-size: 1rem;
+  }

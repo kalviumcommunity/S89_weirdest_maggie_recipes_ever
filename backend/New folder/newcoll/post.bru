@@ -1,0 +1,20 @@
+meta {
+  name: post
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8000
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "name": "Madhu",
+      "email": "madhu@example.com",
+      "age": 25
+  }
+  
+}
