@@ -1,57 +1,64 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import RecipeCard from './components/RecipeCard';
 import './App.css';
-import './About'
 
 function App() {
-  const recipes = [
-    {
-      title: "Maggi Pizza",
-      description: "A creative fusion of Maggi noodles and pizza toppings."
-    },
-    {
-      title: "Butter Garlic Maggi",
-      description: "Maggi noodles tossed in butter and garlic for a rich, aromatic flavor."
-    },
-    {
-      title: "Maggi Sandwich",
-      description: "A crispy sandwich stuffed with spicy Maggi noodles."
-    },
-    {
-      title: "Chocolate Maggi",
-      description: "A bizarre yet delicious combination of Maggi noodles and chocolate syrup."
-    },
-    {
-      title: "Cheese Burst Maggi",
-      description: "Maggi noodles loaded with gooey melted cheese for a rich flavor."
-    },
-    {
-      title: "Spicy Masala Maggi",
-      description: "A fiery twist to Maggi with extra spices and chili."
-    },
-    {
-      title: "Maggi Pizza",
-      description: "A creative fusion of Maggi noodles and pizza toppings."
-    },
-    {
-      title: "Butter Garlic Maggi",
-      description: "Maggi noodles tossed in butter and garlic for a rich, aromatic flavor."
-    },
-    {
-      title: "Maggi Sandwich",
-      description: "A crispy sandwich stuffed with spicy Maggi noodles."
+  const [recipes, setRecipes] = useState([]);
+  const [newRecipe, setNewRecipe] = useState({ title: '', description: '' });
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/recipes');
+        setRecipes(response.data.data);
+      } catch (error) {
+        console.error('Failed to fetch recipes:', error);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/recipes', newRecipe);
+      setRecipes((prevRecipes) => [...prevRecipes, response.data.data]); 
+      setNewRecipe({ title: '', description: '' }); 
+    } catch (error) {
+      console.error('Failed to create recipe:', error);
     }
-  ];
+  };
 
   return (
     <div className="app-container">
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/about">About</Link>
-      </nav>
+      <h1>Recipe List</h1>
+
+      <form onSubmit={handleSubmit} className="recipe-form">
+        <input
+          type="text"
+          placeholder="Recipe Title"
+          value={newRecipe.title}
+          onChange={(e) => setNewRecipe({ ...newRecipe, title: e.target.value })}
+          required
+        />
+        <textarea
+          placeholder="Recipe Description"
+          value={newRecipe.description}
+          onChange={(e) => setNewRecipe({ ...newRecipe, description: e.target.value })}
+          required
+        ></textarea>
+        <button type="submit">Add Recipe</button>
+      </form>
+
       <div className="recipe-list">
         {recipes.map((recipe, index) => (
-          <RecipeCard key={index} title={recipe.title} description={recipe.description} />
+          <RecipeCard
+            key={index}
+            title={recipe.title}
+            description={recipe.description}
+          />
         ))}
       </div>
     </div>

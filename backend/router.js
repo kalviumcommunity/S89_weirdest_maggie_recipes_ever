@@ -1,56 +1,59 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const router = express.Router();
-const model = require('./Schema');
 
-router.post('/post',async(req,res)=>{
+const recipeSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+});
+
+const Recipe = mongoose.model('Recipe', recipeSchema);
+
+router.post('/recipes', async (req, res) => {
     try {
-        const dosa = req.body;
-        if(!dosa.name||!dosa.mainIngredients||!dosa.description){
-            return res.status(400).send({msg:"Enter all name,mainIngredients,description"});
-        }
-        const newDosa= new model(dosa);
-        const savedDosa = await newDosa.save();
-        return res.status(200).send({msg:"Dosa created sucessfully",data:savedDosa});
+      const { title, description } = req.body;
+      if (!title || !description) {
+        return res.status(400).send({ msg: "Title and description are required" });
+      }
+      const newRecipe = new Recipe({ title, description });
+      const savedRecipe = await newRecipe.save();
+      res.status(201).send({ msg: "Recipe created successfully", data: savedRecipe });
     } catch (error) {
-        return res.status(500).send({msg:"something went wrong"});
+      res.status(500).send({ msg: "Failed to create recipe", error: error.message });
     }
-})
-
-router.get('/get',async(req,res)=>{
+  });
+router.get('/recipes', async (req, res) => {
     try {
-        const dosas = await model.find();
-        return res.status(200).send({msg:"Dosas",data:dosas});
+        const recipes = await Recipe.find();
+        return res.status(200).send({ msg: "Recipes fetched successfully", data: recipes });
     } catch (error) {
-        return res.status(500).send({msg:"something went wrong"});
-    }
-})
-
-router.put('/put/:id', async (req, res) => {
-    try {
-        const updatedDosa = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedDosa) {
-            return res.status(404).send({ msg: "Dosa not found" });
-        }
-        return res.status(200).send({ msg: "Dosa updated successfully", data: updatedDosa });
-    } catch (error) {
-        return res.status(500).send({ msg: "Something went wrong" });
+        return res.status(500).send({ msg: "Something went wrong", error: error.message });
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.put('/recipes/:id', async (req, res) => {
     try {
-        const deletedDosa = await model.findByIdAndDelete(req.params.id);
-        if (!deletedDosa) {
-            return res.status(404).send({ msg: "Dosa not found" });
+        const updatedRecipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedRecipe) {
+            return res.status(404).send({ msg: "Recipe not found" });
         }
-        return res.status(200).send({ msg: "Dosa deleted successfully", data: deletedDosa });
+        return res.status(200).send({ msg: "Recipe updated successfully", data: updatedRecipe });
     } catch (error) {
-        return res.status(500).send({ msg: "Something went wrong" });
+        return res.status(500).send({ msg: "Something went wrong", error: error.message });
     }
 });
 
-
-
+router.delete('/recipes/:id', async (req, res) => {
+    try {
+        const deletedRecipe = await Recipe.findByIdAndDelete(req.params.id);
+        if (!deletedRecipe) {
+            return res.status(404).send({ msg: "Recipe not found" });
+        }
+        return res.status(200).send({ msg: "Recipe deleted successfully", data: deletedRecipe });
+    } catch (error) {
+        return res.status(500).send({ msg: "Something went wrong", error: error.message });
+    }
+});
 
 module.exports = router;
