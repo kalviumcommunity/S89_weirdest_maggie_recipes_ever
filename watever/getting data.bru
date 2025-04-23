@@ -6,6 +6,13 @@ meta {
 
 get {
   url: http://localhost:5000/api/recipes
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "title": "Spicy Masala Maggi recipe",
+    "description": "A fiery twist to Maggi with extra spices and chilis."
+  }
 }
