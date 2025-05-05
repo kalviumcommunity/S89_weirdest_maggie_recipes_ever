@@ -17,6 +17,15 @@ const AddEntity = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/recipes/${id}`);
+      setEntities((prevEntities) => prevEntities.filter((entity) => entity._id !== id));
+    } catch (error) {
+      console.error('Failed to delete entity:', error);
+    }
+  };
+
   return (
     <div className="add-entity-container">
       <h1>Add New Entity</h1>
@@ -43,6 +52,7 @@ const AddEntity = () => {
           <div key={index} className="entity-card">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
+            <button onClick={() => handleDelete(item._id)}>Delete</button>
           </div>
         ))}
       </div>
