@@ -13,7 +13,7 @@ const Recipe = mongoose.model('Recipe', recipeSchema);
 router.post('/recipes', async (req, res) => {
     try {
       const { title, description } = req.body;
-      if (!title || !description) {
+      if (!description || !title) {
         return res.status(400).send({ msg: "Title and description are required" });
       }
       const newRecipe = new Recipe({ title, description });
