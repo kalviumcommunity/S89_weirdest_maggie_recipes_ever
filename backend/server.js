@@ -1,20 +1,29 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); 
-const router = require('./router'); 
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const router = require('./router');
+const authRouter = require('./authRouter');
 const app = express();
 const PORT = 5000;
 require('dotenv').config();
 
-app.use(cors());
+// Configure CORS to allow credentials
+app.use(cors({
+  origin: 'http://localhost:3000', // Frontend URL
+  credentials: true
+}));
 
 app.use(express.json());
+app.use(cookieParser()); // Add cookie parser middleware
 
 app.get('/ping', (req, res) => {
   res.send('pong');
 });
 
+// Use routers
 app.use('/api', router);
+app.use('/auth', authRouter); // Add auth router
 
 app.listen(PORT, async () => {
   try {
