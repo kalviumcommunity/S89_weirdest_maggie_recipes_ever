@@ -4,6 +4,27 @@ const User = require('./models/User');
 
 const router = express.Router();
 
+// JWT Secret key - in production, this should be in environment variables
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+// Middleware to verify JWT token
+const verifyToken = (req, res, next) => {
+    try {
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).send({ msg: "No token provided" });
+        }
+
+        // Verify the token
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded; // Add user info to request
+        next();
+    } catch (error) {
+        return res.status(401).send({ msg: "Invalid token", error: error.message });
+    }
+};
+
 // Login endpoint
 router.post('/login', async (req, res) => {
     try {
@@ -29,13 +50,13 @@ router.post('/login', async (req, res) => {
         // Create JWT token
         const token = jwt.sign(
             { userId: user._id, username: user.username },
-            process.env.JWT_SECRET || 'your-secret-key',
+            JWT_SECRET,
             { expiresIn: '1h' }
         );
 
-        // Set cookie with the token
-        res.cookie('username', username, {
-            httpOnly: false, // Allow JavaScript access for testing
+        // Set cookie with the JWT token
+        res.cookie('token', token, {
+            httpOnly: true, // For security, don't allow JavaScript access
             maxAge: 3600000, // 1 hour
             sameSite: 'lax', // Less restrictive SameSite policy
             path: '/'
@@ -56,9 +77,9 @@ router.post('/login', async (req, res) => {
 // Logout endpoint
 router.post('/logout', (req, res) => {
     try {
-        // Clear the cookie
-        res.clearCookie('username', {
-            httpOnly: false,
+        // Clear the token cookie
+        res.clearCookie('token', {
+            httpOnly: true,
             sameSite: 'lax',
             path: '/'
         });
@@ -69,19 +90,16 @@ router.post('/logout', (req, res) => {
     }
 });
 
-// Get current user
-router.get('/me', (req, res) => {
+// Get current user - using the verifyToken middleware
+router.get('/me', verifyToken, (req, res) => {
     try {
-        console.log('Cookies received:', req.cookies); // Debug log
-        const username = req.cookies.username;
-
-        if (!username) {
-            return res.status(401).send({ msg: "Not authenticated" });
-        }
-
+        // User info is already verified and available in req.user from the middleware
         res.status(200).send({
             msg: "User retrieved successfully",
-            user: { username }
+            user: {
+                userId: req.user.userId,
+                username: req.user.username
+            }
         });
     } catch (error) {
         console.error('Error in /me endpoint:', error);
@@ -95,7 +113,7 @@ router.get('/login-form', (req, res) => {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Login</title>
+            <title>JWT Authentication</title>
             <style>
                 body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
                 .form-group { margin-bottom: 15px; }
@@ -104,13 +122,18 @@ router.get('/login-form', (req, res) => {
                 button { padding: 10px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; }
                 .actions { margin-top: 20px; }
                 .actions button { margin-right: 10px; }
-                #status { margin-top: 20px; padding: 10px; border-radius: 4px; }
+                #status { margin-top: 20px; padding: 10px; border-radius: 4px; white-space: pre-wrap; }
                 .success { background-color: #dff0d8; color: #3c763d; }
                 .error { background-color: #f2dede; color: #a94442; }
+                h1 { color: #333; }
+                .info { margin-top: 20px; padding: 10px; background-color: #d9edf7; color: #31708f; border-radius: 4px; }
             </style>
         </head>
         <body>
-            <h1>Login</h1>
+            <h1>JWT Authentication Demo</h1>
+            <div class="info">
+                This form demonstrates JWT token-based authentication. The token is stored in an HTTP-only cookie.
+            </div>
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" value="testuser">
@@ -138,7 +161,7 @@ router.get('/login-form', (req, res) => {
                                 username: document.getElementById('username').value,
                                 password: document.getElementById('password').value
                             }),
-                            credentials: 'include'
+                            credentials: 'include' // Important for cookies
                         });
 
                         const data = await response.json();
@@ -155,7 +178,7 @@ router.get('/login-form', (req, res) => {
                     try {
                         const response = await fetch('/auth/logout', {
                             method: 'POST',
-                            credentials: 'include'
+                            credentials: 'include' // Important for cookies
                         });
 
                         const data = await response.json();
@@ -171,7 +194,7 @@ router.get('/login-form', (req, res) => {
                 async function checkAuth() {
                     try {
                         const response = await fetch('/auth/me', {
-                            credentials: 'include'
+                            credentials: 'include' // Important for cookies
                         });
 
                         const data = await response.json();
